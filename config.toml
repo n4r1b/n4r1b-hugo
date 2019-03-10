@@ -1,0 +1,95 @@
+baseURL = "https://example.com"
+title = "Up is Down and Black is White"
+
+theme = "hello-friend-ng"
+
+DefaultContentLanguage = "es"
+
+pygmentsCodefences = true
+pygmentsUseClasses = true
+rssLimit  = 10  # Maximum number of items in the RSS feed.
+
+
+archetypeDir = "archetypes"
+contentDir   = "content"
+dataDir      = "data"
+layoutDir    = "layouts"
+publishDir   = "public"
+
+
+buildDrafts  = false
+buildFuture  = false
+buildExpored = false
+canonifyURLs = true
+
+enableRobotsTXT = true
+enableGitInfo   = false
+enableEmoji     = true
+enableMissingTranslationPlaceholders = false
+disableRSS     = true
+disableSitemap = false
+disable404     = false
+disableHugoGeneratorInject = false
+
+[permalinks]
+  posts = "/posts/:year/:month/:title/"
+
+[author]
+  name = "n4r1b"
+
+[params]
+  dateform        = "Jan 2, 2006"
+  dateformShort   = "Jan 2"
+  dateformNum     = "2006-01-02"
+  dateformNumTime = "2006-01-02 15:04 -0700"
+
+  # Metadata mostly used in document's head
+  description = "Homepage and blog by Djordje Atlialp"
+  keywords = "RE, blog, Reversing, Security, Kernel, infosec"
+  images = [""]
+
+  homeSubtitle = "n4r1b"
+
+  customCSS = []
+  customJS  = []
+
+  # Toggle this option need to rebuild SCSS, requires extended version of Hugo
+  justifyContent = false  # Set "text-align: justify" to .content.
+
+  # Directory name of your blog content (default is `content/posts`)
+  contentTypeName = "posts"
+  # Default theme "light" or "dark"
+  defaultTheme = "dark"
+
+  [params.logo]
+    logoText     = "n4r1b/re$"
+    logoHomeLink = "/"
+
+  # Social icons
+  [[params.social]]
+    name = "twitter"
+    url  = "https://twitter.com/n4r1b"
+
+  [[params.social]]
+    name = "github"
+    url  = "https://github.com/n4r1b"
+
+[languages]
+  [languages.es]
+    subtitle  = "n4r1b"
+    weight    = 1
+
+  [languages.en]
+    subtitle  = "n4r1b"
+    weight    = 2
+
+
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name       = "About"
+    url        = "about/"
+  [[menu.main]]
+    identifier = "posts"
+    name       = "Posts"
+    url        = "posts/"
