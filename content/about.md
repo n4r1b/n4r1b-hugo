@@ -1,7 +1,7 @@
 +++
 title = "Solo sé que no sé nada"
 description = "Mas sobre mi..."
-images = [""]
+images = ["https://n4r1b.netlify.com/images/cover.jpg"]
 date = "2019-03-10"
 aliases = ["about-us","about-me","contact"]
 [ author ]
