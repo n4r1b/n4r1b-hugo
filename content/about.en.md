@@ -1,7 +1,7 @@
 +++
 title = "Almost a Reverse Engineer"
 description = "More about me..."
-images = ["cover.jpg"]
+images = ["/images/cover.jpg"]
 date = "2019-03-10"
 aliases = ["about-us","about-me","contact"]
 [ author ]
@@ -10,7 +10,7 @@ aliases = ["about-us","about-me","contact"]
 
 <table border="0">
  <tr>
-    <td><img src="/images/avatar.jpg" style="width:150px; border-radius: 50%" alt="Avatar"></td>
+    <td><img src="/images/avatar.jpg" style="border: 2px solid #a9a9b3; width:150px; border-radius: 50%" alt="Avatar"></td>
     <td style="width: 450px;padding-left: 15px;padding-top: 15px;">
         I work in some company as a Reverse Engineer, I'm a security enthusiast. Oh.. And I like motorbikes and comics among other things 😃😃<br/>
         Windows | OSX
