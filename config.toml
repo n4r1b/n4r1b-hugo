@@ -44,7 +44,7 @@ disableHugoGeneratorInject = false
   dateformNumTime = "2006-01-02 15:04 -0700"
 
   # Metadata mostly used in document's head
-  description = "Homepage and blog by Djordje Atlialp"
+  description = "Reverse Engineer blog by n4r1b"
   keywords = "RE, blog, Reversing, Security, Kernel, infosec"
   images = [""]
 
