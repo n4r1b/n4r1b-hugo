@@ -46,7 +46,7 @@ disableHugoGeneratorInject = false
   # Metadata mostly used in document's head
   description = "Reverse Engineer blog by n4r1b"
   keywords = "RE, blog, Reversing, Security, Kernel, infosec"
-  images = ["cover.jpg"]
+  images = ["https://n4r1b.netlify.com/images/cover.jpg"]
 
   homeSubtitle = "n4r1b"
 

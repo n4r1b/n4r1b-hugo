@@ -1,7 +1,7 @@
 +++
 title = "Almost a Reverse Engineer"
 description = "More about me..."
-images = ["/images/cover.jpg"]
+images = [""]
 date = "2019-03-10"
 aliases = ["about-us","about-me","contact"]
 [ author ]
