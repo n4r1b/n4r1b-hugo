@@ -1,5 +1,6 @@
 +++
 title = "Almost a Reverse Engineer"
+description = "More about me.."
 date = "2019-03-10"
 aliases = ["about-us","about-me","contact"]
 [ author ]
