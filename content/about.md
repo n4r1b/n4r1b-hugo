@@ -1,7 +1,7 @@
 +++
 title = "Solo sé que no sé nada"
 description = "Mas sobre mi..."
-featured = "cover.jpg"
+images = ["cover.jpg"]
 date = "2019-03-10"
 aliases = ["about-us","about-me","contact"]
 [ author ]
