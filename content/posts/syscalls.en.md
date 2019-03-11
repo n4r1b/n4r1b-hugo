@@ -79,7 +79,7 @@ And here there is an image following those steps by hand on windbg to obtain the
 
 Finally, these function will get called by the instruction ```call r10 \\ The address of the kernel function is on r10``` and that's pretty much all folks. That's how the Syscall handler transfer the syscall request from ring 3 into ring 0
 
-I hope everything is more or less clear, I've tried to explain everything in the simplest terms possible (Probably I didn't break it down as much as the topic deserve). If theres any mistakes (I wouldn't be surprised, I'm not an expert on the topic..) or anything that's not clear please don't hesitate to concact me!! (it's free!) [@n4r1b](https://www.twitter.com/n4r1b). <br/>
+I hope everything is more or less clear, I've tried to explain everything in the simplest terms possible (Probably I didn't break it down as much as the topic deserve). If theres any mistakes (I wouldn't be surprised, I'm not an expert on the topic..) or anything that's not clear please don't hesitate to contact me!! (it's free!) [@n4r1b](https://www.twitter.com/n4r1b). <br/>
 And that's all folks. Until the next! 🤪🤪
 
 **Note1: Every image of windbg has been taken from a remote kernel debugging of a Virtual Machine running Windows 8.1 Pro**<br/><br/>
