@@ -1,5 +1,6 @@
 +++
 categories = ["Kernel", "Syscall", "Windows x64"]
+tags = ["Kernel", "Syscall", "Windows x64"]
 date = "2019-03-11"
 description = "Pequeño introduccion a como funcionan las llamadas a sistema en Windows x64"
 images = ["https://n4r1b.netlify.com/images/syscall/syscall.jpg"]
@@ -9,7 +10,7 @@ featuredpath = "date"
 linktitle = ""
 title = "Llamadas a sistema en Windows x64"
 slug = "Llamadas a sistema en Windows x64"
-type = "post"
+type = "posts"
 +++
 
 Los que me conozcan sabran que siempre he estado muy interesado por todo lo relacionado con el kernel, pero nunca he tenido tiempo para centrarme en ese tema. Pero este año he decidido dedicar mi tiempo libre a esto (me he comprado el Windows Internals e incluso lo estoy leyendo 😆😆). 

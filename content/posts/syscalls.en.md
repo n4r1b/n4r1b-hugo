@@ -1,5 +1,6 @@
 +++
 categories = ["Kernel", "Syscall", "Windows x64"]
+tags = ["Kernel", "Syscall", "Windows x64"]
 date = "2019-03-11"
 description = "Little overview on how System calls work on Windows x64"
 images = ["https://n4r1b.netlify.com/images/syscall/syscall.jpg"]
@@ -9,7 +10,7 @@ featuredpath = "date"
 linktitle = ""
 title = "System calls on Windows x64"
 slug = "System calls on Windows x64"
-type = "post"
+type = "posts"
 +++
 
 Those who know me know that I've been always interested in Kernel stuff, but due to lack of time I've never been available to focus on this topic. But this year I took the decision to spend my free time looking into this (I even bought Windows Internals... And I'm reding it!! 😆😆). Also, I've been taking notes on everything I research. And I decided to clean it all and share it on this blog, maybe It can help someone starting
