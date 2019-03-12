@@ -32,7 +32,7 @@ As I said, the situation is quiet complex, that's the point where the instructio
 
 > More info on this excellent article  https://www.andrea-allievi.com/blog/x64-memory-segmentation-is-the-game-over <br/>By [@aall86](https://twitter.com/aall86)
 
-The value IA32_KERNEL_GS_BASE point to the PCR structure (Processor control region) and through this structure whe can get everything necessary to achieve the transition into the Kernel function. (You can get the PCR by using the windbg extension ```!pcr``` other way is to use the value of gs:0 as the addres in ```dt nt!_KPCR```)
+The value IA32_KERNEL_GS_BASE point to the PCR structure (Processor control region) and through this structure whe can get everything necessary to achieve the transition into the Kernel function. (~~You can get the PCR by using the windbg extension ```!pcr```~~ **on Windows Internals 7, Chapter 2 they mention that the command ```!pcr``` is deprecated and shows incorrect data (the [Windows](https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/-pcr) doc doesn't remark this) so it's best to use the command ```dt nt!_KPCR @$pcr```**)
 
 So, the next the syscall handler will do is save the calling process stack with the instruction ```mov gs:10, rsp``` the PCR structure has a member called "UserRsp" on offset ```10h```. Following this, the handler will get the Kernel stack with the instruction ```mov rsp, gs:1A8h``` here things are a little bit more complex because on offset ```28h``` inside the structure PRCB (Processor Control Block) which is on offset ```180h``` of the structure PCR we can find a member called "RspBase" which point to the top of the Kernel Stack
 

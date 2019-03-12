@@ -34,13 +34,13 @@ Como ya he dicho la situacion es compleja, por tanto lo primero que necesita obt
 
 > Mas info sobre esto en este articulo https://www.andrea-allievi.com/blog/x64-memory-segmentation-is-the-game-over <br/>De [@aall86](https://twitter.com/aall86)
 
-Este valor apunta la estructura PCR (Processor Control Region) la cual podemos obtener con la extension ```!pcr``` de windbg, mediante esta estructura se pueden obtener todos los valores que necesita el Kernel para llevar a cabo la transicion. 
+Este valor apunta la estructura PCR (Processor Control Region) ~~la cual podemos obtener con la extension ```!pcr``` de windbg~~ **Leyendo el capitulo 2 de Windows Internals 7 hablan de la estrucutra KPCR y se comenta que el comando !pcr esta obsoleto y muestra valores incorrectos (la documentacion de [Windows](https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/-pcr) no lo menciona) por tanto es mejor utilizar el comando ```dt nt!_KPCR @$pcr**, mediante esta estructura se pueden obtener todos los valores que necesita el Kernel para llevar a cabo la transicion. 
 
 Por tanto, lo siguiente que hara el manejador de la syscall sera guardar el Stack del proceso que ha causado la llamada ```mov gs:10, rsp``` en el miembro "UserRsp" de la estructura PCR y obtener la direccion del Stack del Kernel (instruccion ```mov rsp, gs:1A8h```) esta direccion se encuentra en el offset ```28h``` dentro de la estructure PRCB (Processor Control Block) y a su vez esta estructura se encuentra en el offset ```180h``` de la estrucutara PCR
 
 <img src="/images/syscall/kernel_stack.jpg" style="margin-left:auto; margin-right:auto"/>
 
-Llegados a este punto ya se puede guardar el estado del proceso en el stack del Kernel, y se obtiene el KTHREAD (instruccion ```mov rsp, gs:188h```) a partir ```PCR+180h->PRCB+8h->KTHREAD``` y esta estructura se utilizara, primero para comprobar si esta activo el bit "DebugActive" en la cabecera del KTHREAD y luego para guardar los siguientes valors:
+Llegados a este punto ya se puede guardar el estado del proceso en el stack del Kernel, y se obtiene el KTHREAD (instruccion ```mov rsp, gs:188h```) a partir ```PCR+180h->PRCB+8h->KTHREAD``` y esta estructura se utilizara, primero para comprobar si esta activo el bit "DebugActive" en la cabecera del KTHREAD y luego para guardar los siguientes valores:
 
 <table border="0">
  <tr>
