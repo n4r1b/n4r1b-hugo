@@ -7,6 +7,7 @@ DefaultContentLanguage = "es"
 
 pygmentsCodefences = true
 pygmentsUseClasses = true
+PygmentsStyle = "monokai"
 rssLimit  = 10  # Maximum number of items in the RSS feed.
 
 
@@ -50,7 +51,7 @@ disableHugoGeneratorInject = false
 
   homeSubtitle = "n4r1b"
 
-  customCSS = []
+  customCSS = ["/css/syntax.css"]
   customJS  = []
 
   # Toggle this option need to rebuild SCSS, requires extended version of Hugo
