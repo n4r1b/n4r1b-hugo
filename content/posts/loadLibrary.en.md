@@ -13,10 +13,10 @@ slug = "Part 1: Digging deep into LoadLibrary"
 type = "posts"
 +++
 
-Welcome back! Here we are again with the Kernel, today we are going to talk about one of the most, if not the most, famous functions from the Windows API, LoadLibrary. The motivation to do this research comes from a project I was wroking on a couple of weeks ago, where I was writing a reflective loader of a DLL and I wasn't able to make it work (Finally it had to do with some reloc stuff), so yeah, I thought the best way to find my error was to look how Windows handle the load library process.
+Welcome back! Here we are again with the Kernel, today we are going to talk about one of the most, if not the most, famous functions from the Windows API, LoadLibrary. The motivation to do this research comes from a project I was working on a couple of weeks ago, where I was writing a reflective loader of a DLL and I wasn't able to make it work (Finally it had to do with some reloc stuff), so yeah, I thought the best way to find my error was to look how Windows handles the load library process.
 
 ## Disclaimer!
-I will focus on the Kernel code that gets executed when LoadLibrary is executed. Everything that goes on Userland I will just skim through it. On the other hand, I won't go into every call/instruction inside the Kernel, believe, there is **A LOT** of code there. I will focus on what I believe are the most important functions and structures.
+I will focus on the Kernel code that gets executed when LoadLibrary is invoked. Everything that goes on Userland I will just skim through it. On the other hand, I won't go into every call/instruction inside the Kernel, believe, there is **A LOT** of code there. I will focus on what I believe are the most important functions and structures.
 
 
 ## LoadLibrary!
@@ -31,13 +31,13 @@ int WinMain(...) {
 
 I use the Unicode function because the kernel only works with these kind of Strings, and so I save some time will doing the research 😁
 
-The first thing that happen when LoadLibraryW gets executed is that execution gets redirected into the DLL **KernelBase.dll** (These has to do with the new MinWin Kernel that Windows adopted since Windows 7. [More info](https://blog.quarkslab.com/runtime-dll-name-resolution-apisetschema-part-i.html)), inside KernelBase the first function that will be called is **RtlInitUnicodeStringEx** to obtain a UNICODE_STRING with the parameter passed to LoadLibrary (This is a Struct not a String!!) next, we get into the function **LdrLoadDLL** (Prefix Ldr == Loader) where the parameter in ```r9``` is an out param which will have the handle of the loaded module. After this we get into the private version of this function **LdrpLoadDll**, these two functions is where all the interesting code of Userland will get executed. After some sanity checks and getting inside some more functions we finally get into the first jump into kernel code. The kernel function to execute is **NtOpenSection** and is the one that Im going to be focusing on this post. Here we can see the call stack just before going into the kernel.
+The first thing that happen when LoadLibraryW gets executed is that execution gets redirected into the DLL **KernelBase.dll** (These has to do with the new MinWin Kernel that Windows adopted since Windows 7. [More info](https://blog.quarkslab.com/runtime-dll-name-resolution-apisetschema-part-i.html)), inside KernelBase the first function that will be called is **RtlInitUnicodeStringEx** to obtain a UNICODE_STRING with the parameter passed to LoadLibrary (This is a Struct not a String!!) next, we get into the function **LdrLoadDLL** (Prefix Ldr == Loader) where the parameter in ```r9``` is an out param which will have the handle of the loaded module. After this we get into the private version of this function **LdrpLoadDll**, these two functions is where all the interesting code of Userland will get executed. After some sanity checks and getting inside some more functions we finally get into the first jump into kernel code. The kernel function to execute is **NtOpenSection** and is the one that I'm going to be focusing on this post. Here we can see the call stack just before going into the kernel.
 
 ![alt img](/images/loadLibrary/call_stack_userland.jpg "UserLand CallStack")
 
 ## NtOpenSection
 
-First thing we need to know is what does "Section" stands for, going into the Windows Drivers doc in the Memory Managment chapter there is a section called ["Section Objects and Views"](https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/section-objects-and-views) where it can be read that a "Section Object" represents a memory region that can be shared and that this object provides a mechanism for a process to map a file into its memory address space (That's pretty much quoting the doc)
+First thing we need to know is what does "Section" stands for, going into the Windows Drivers doc in the Memory Management chapter there is a section called ["Section Objects and Views"](https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/section-objects-and-views) where it can be read that a "Section Object" represents a memory region that can be shared and that this object provides a mechanism for a process to map a file into its memory address space (That's pretty much quoting the doc)
 
 > Bear in mind that Windows Kernel, even thought is written almost entirely in C, it's kinda Object Oriented (It's no 100% Object Oriented, Inherit principles are not followed strictly) that's why we usually speak about Object whitin the kernel. In this case "Section Object"
 
@@ -60,7 +60,7 @@ the ACCESS_MASK is a combination of the following values, which can be obtained 
 #define SECTION_MAP_READ             0x0004
 #define SECTION_MAP_EXECUTE          0x0008
 ```
-First thing this function will do, as almost every other Executive Kernel function, is to obtain the PreviousMode](https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/previousmode) and after that there will be another check, also pretty normal to see it in Kernel functions, which will check if PHANDLE value is over the MmUserProbeAddress, if this second check goes wrong error 998 will pop-up ("Invalid Access to memory location").
+First thing this function will do, as almost every other Executive Kernel function, is to obtain the [PreviousMode](https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/previousmode) and after that there will be another check, also pretty normal to see it in Kernel functions, which will check if PHANDLE value is over the MmUserProbeAddress, if this second check goes wrong error 998 will pop-up ("Invalid Access to memory location").
 
 > Some days ago [@benhawkes](https://twitter.com/benhawkes) from Project Zero, disclosed a Windows Kernel vulnerability that has something to do with the PreviousMode check, make sure to read his article it's very dope (as always with Project Zero articles) https://googleprojectzero.blogspot.com/2019/03/windows-kernel-logic-bug-class-access.html
 
@@ -76,9 +76,9 @@ after returning from that function, fun with structures begins! 🤣🤣. First 
 
 ![alt img](/images/loadLibrary/eprocess_kprocess.jpg "Executive Process, Kernel Process")
 
-this way the Kernel gets the UniqueProcessId (EPROCESS+```2E0h```), along with these the code also gets a pointer to the member GenericMapping, which is the offset ```0xc``` inside the structure OBJ_TYPE_INITIALIZER that resides inside the structure OBJECT_TYPE in offset ```40h```. Following this, the function **SepCreateAccessStateFromSubjectContext** will get called, as the name implies we recieve an [ACCESS_STATE](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/ns-wdm-_access_state) Object after calling this function (Pointer passed as an argument in ```rdx```) this function belong to the component ["Security Reference Monitor"](https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/windows-kernel-mode-security-reference-monitor) this component mainly provides function to check access and rights, you can identify these functions by the prefix **Se**
+this way the Kernel gets the UniqueProcessId (EPROCESS+```2E0h```), along with these the code also gets a pointer to the member GenericMapping, which is the offset ```0xc``` inside the structure OBJ_TYPE_INITIALIZER that resides inside the structure OBJECT_TYPE in offset ```40h```. Following this, the function **SepCreateAccessStateFromSubjectContext** will get called, as the name implies we receive an [ACCESS_STATE](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/ns-wdm-_access_state) Object after calling this function (Pointer passed as an argument in ```rdx```) this function belong to the component ["Security Reference Monitor"](https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/windows-kernel-mode-security-reference-monitor) this component mainly provides function to check access and rights, you can identify these functions by the prefix **Se**
 
-Next step, probably one of the most important during this process, is to execute the function **ObpLookupObjectName**. Again the name give us a little info on the functionality of the method, here the code will look for an Object based on a Name (In this case the DLL name). Just by lookign at the function Graph we can tell it's an important function 🤣
+Next step, probably one of the most important during this process, is to execute the function **ObpLookupObjectName**. Again the name give us a little info on the functionality of the method, here the code will look for an Object based on a Name (In this case the DLL name). Just by looking at the function Graph we can tell it's an important function 🤣
 
 <img src="/images/loadLibrary/graph.jpg" alt="ObpLookupObjectName Graph" style="margin:auto; width:50%"/>
 
@@ -94,7 +94,7 @@ Inside this function, first thing is to initialize the structure [OBP_LOOKUP_CON
 
 ![alt img](/images/loadLibrary/known_dlls.jpg "Known DLLs")
 
-next, the code wil calcualate a Hash with the name of the DLL and it will check if this Hash matches one of the Hashes from the "KnownDlls", if there are no matches then the function will return the error "c0000034: Object Name not found.". From here on, the flow is mainly to clean everything before returning into Userland. 
+next, the code wil calculate a Hash with the name of the DLL and it will check if this Hash matches one of the Hashes from the "KnownDlls", if there are no matches then the function will return the error "c0000034: Object Name not found.". From here on, the flow is mainly to clean everything before returning into Userland. 
 
 ![alt img](/images/loadLibrary/error_name.jpg "Error c0000034")
 
@@ -107,7 +107,7 @@ Now let's imagine the DLL we are looking for is inside the KnownDlls list, For t
 
 > **NOTE!** We need elevated privileges to do this, in my case I just set myself as the owner of that key and added the DLL
 
-In the following image you can see how the Kerberos DLL has been loaded as part of the KnownDlls (Haven't checked too much, but I belive the name must be Uppercase because the hash is calculated with the Uppercase name of the DLL, but there are cases like "kernel32.dll" which are in Lowercase so I gotta investigate more on this)
+In the following image you can see how the Kerberos DLL has been loaded as part of the KnownDlls (Haven't checked too much, but I believe the name must be Uppercase because the hash is calculated with the Uppercase name of the DLL, but there are cases like "kernel32.dll" which are in Lowercase so I gotta investigate more on this)
 
 <a name="kerberos">![alt img](/images/loadLibrary/kerberos_knowndll.jpg "Kerberos KnownDll")</a>
 
@@ -118,7 +118,7 @@ Doing a Fast-Forward we can see how the function **ObpLookupObjectName** this ti
 For this case we will start directly from the function **ObpLookupObjectName**, specifically from the point where the hash is computed (The code flow is the same until this point for both cases). This time we will look how the hash is calculated by looking at the following pseudocode:
 
 
-> **NOTE!** This function is undocumented, so is very possible that the implementation changes from one version of Windows to another, even from one SP to the next one. In my particular Im studying the kernel of this version: **Windows 8.1 Kernel Version 9600 MP (2 procs) Free x64**
+> **NOTE!** This function is undocumented, so is very possible that the implementation changes from one version of Windows to another, even from one SP to the next one. In my particular I'm studying the kernel of this version: **Windows 8.1 Kernel Version 9600 MP (2 procs) Free x64**
 
 ```cpp
 // Credit to Hex-Ray xD
@@ -158,7 +158,7 @@ If this first check goes well, the code then obtains the ```OBJECT_HEADER_NAME_I
 
 ![alt img](/images/loadLibrary/return_obplookupobjectname.jpg "return ObpLookupObjectName")
 
-If you check the arguments the function receives ([here](#params_obp)) the value FoundObject will be on ```rsp+68h``` while the structure ```OBP_LOOKUP_CONTEX``` will be on ```rsp+48h```. Also look how the Object doesnt' have any Handle opened still, this will happen in the last function we are going to study today **ObpCreateHandle**, this function will be in cahrge of getting the handle from the Object.
+If you check the arguments the function receives ([here](#params_obp)) the value FoundObject will be on ```rsp+68h``` while the structure ```OBP_LOOKUP_CONTEX``` will be on ```rsp+48h```. Also look how the Object doesn't have any Handle opened still, this will happen in the last function we are going to study today **ObpCreateHandle**, this function will be in cahrge of getting the handle from the Object.
 
 This function also has A LOT of code, and since this is already quite long I won't go into much detail (Maybe in other Post I could go into more detail, because is a pretty interesting function)
 
@@ -172,14 +172,14 @@ ObMaxOpenReason     =   4
 ```
 then in ```rdx``` the function expects a reference to the Object (The DLL Section Object), and in ```r9``` the function will receive an ACCESS_STATE structure, with the ACCESS_MASK among other interesting things.
 
-We this in mind, and knowing in this case the value from the ``OB_OPEN_REASON`` enum will be ObOpenHandle, let's roll. The first thing the function will do is check if the handler we are trying to obtain is for a Kernel Object (With other words, we are trying to get a [Kernel Handle](https://docs.microsoft.com/en-us/windows/desktop/sysinfo/kernel-objects)). If this is not the case, then the function will retreive the ObjectTable (```KTHREAD->ApcState->Process->(EPROCESS) ObjectTable```) which corresponds to a ``HANDLE_TABLE`` structure, after some checks the function [**ExAcquireResourceSharedLite**](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/nf-wdm-exacquireresourcesharedlite) will get called in order to get the resources of the PrimaryToken (When I say resource Im speaking about the structure ```ERESOURCES``` which is some sort of mutex, you can read more about resources [here](https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/introduction-to-eresource-routines))
+We this in mind, and knowing in this case the value from the ``OB_OPEN_REASON`` enum will be ObOpenHandle, let's roll. The first thing the function will do is check if the handler we are trying to obtain is for a Kernel Object (With other words, we are trying to get a [Kernel Handle](https://docs.microsoft.com/en-us/windows/desktop/sysinfo/kernel-objects)). If this is not the case, then the function will retrieve the ObjectTable (```KTHREAD->ApcState->Process->(EPROCESS) ObjectTable```) which corresponds to a ``HANDLE_TABLE`` structure, after some checks the function [**ExAcquireResourceSharedLite**](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/nf-wdm-exacquireresourcesharedlite) will get called in order to get the resources of the PrimaryToken (When I say resource I'm speaking about the structure ```ERESOURCES``` which is some sort of mutex, you can read more about resources [here](https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/introduction-to-eresource-routines))
 
-If the resource has been acquired the the function [**SeAccessCheck**](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/nf-wdm-seaccesscheck) will be called, these function checks if the requested access right to the specific object can be granted. If these rights are granted we get inot the function **ObpIncrementHandleCountEx** which is in charge of incrementing the Handle count from both this Section Object we are trying to get the handle of and the general Section Object Type count (This function only increment the counter, but this doesn't mean the handle is open. This can be check by running ```!object [object]``` and you'll notice the HandleCount has been incremented, but checking the handles of the process ```!handle``` you won't see any reference to this handle)
+If the resource has been acquired the the function [**SeAccessCheck**](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/nf-wdm-seaccesscheck) will be called, these function checks if the requested access right to the specific object can be granted. If these rights are granted we get into the function **ObpIncrementHandleCountEx** which is in charge of incrementing the Handle count from both this Section Object we are trying to get the handle of and the general Section Object Type count (This function only increment the counter, but this doesn't mean the handle is open. This can be check by running ```!object [object]``` and you'll notice the HandleCount has been incremented, but checking the handles of the process ```!handle``` you won't see any reference to this handle)
 
 Lastly, the handle will be open. To save some time I will show some pseudocode of how this is done and I will add comments in the code. (Again pseudocode sponsored by Hex-Rays 🤣)
 
 ```cpp
-// Im goint to simplify, there will be no check nor casts
+// I'm goint to simplify, there will be no check nor casts
 HANDLE_TABLE * HandleTable = {};
 HANDLE_TABLE_ENTRY * NewHandle = {};
 HANDLE_TABLE_FREE_LIST * HandlesFreeList = {};
@@ -235,7 +235,7 @@ Finally, the function will return the Handle value in ```rsp+48```. From now unt
 
 ## Conclusions
 
-As you can see, there is a lot of code inside the Kernel, and not everything is straight forward, I would dare to say that things are pretty complex. Have in mind that this is something quite simple, we will get into more sophisticated stuff 😀😀. On the other hand, I left **A LOOT** of code, structures, lists, etc... without commenting nor mentioning so please don't kill me for this, I tried to summarize into what I thoutgh was the most important. Of course, as always if you have any doubts, questions or if there's something wrong and you want to bash me don't hesitate to contact me (it's free!!).
+As you can see, there is a lot of code inside the Kernel, and not everything is straight forward, I would dare to say that things are pretty complex. Have in mind that this is something quite simple, we will get into more sophisticated stuff 😀😀. On the other hand, I left **A LOOT** of code, structures, lists, etc... without commenting nor mentioning so please don't kill me for this, I tried to summarize into what I thought was the most important. Of course, as always if you have any doubts, questions or if there's something wrong and you want to bash me don't hesitate to contact me (it's free!!).
 And that's all folks, I hope you enjoyed it and see you in Part 2!! I'm off!! 🤪🤪
 
 [@n4r1b](https://www.twitter.com/n4r1b)
