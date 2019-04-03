@@ -32,6 +32,9 @@ disableSitemap = false
 disable404     = false
 disableHugoGeneratorInject = false
 
+[blackfriday] 
+  hrefTargetBlank = true
+
 [permalinks]
   posts = "/posts/:year/:month/:title/"
 
