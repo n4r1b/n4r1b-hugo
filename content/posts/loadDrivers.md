@@ -71,7 +71,8 @@ Por ultimo se van a cargar los Drivers de los cuales *ntoskrnl.exe* y *hal.dll* 
 > Os voy a decir una tecnica que os va a salvar la vida si vais a debugear el Bootloader. Todos estos modulos han sido cargados pero tanto la llamada `OslLoadImage` como la llamada `OslLoadDrivers` no cargan los simbolos (Es decir no llaman a `DbgLoadImageSymbols`) por tanto no tendremos los simbolos de ninguno de estos modulos, y la verdad que los simbolos del modulo **ntoskrnl** vienen bastante bien 🤣. Pero WinDBG nos da la posibilidad de cargar los simbolos y como sabemos la base (La podemos obtener del `LOADER_PARAMETER_BLOCK` podemos cargar los simbolos que queramos. 
 
 > El comando es `.reload /f /i [NombreDelModulo]=[BaseDelModulo]`
-> <video width="640" height="480" controls>
+> 
+> <video style="margin-top:10px" width="100%" controls>
   <source src="/videos/oslLoadDrivers/video_reload.mov" type="video/mp4">
 </video>
 
@@ -160,12 +161,13 @@ Una vez esta funcion acaba ya queda poco para terminar con el proceso, se obtien
 
 ![alt img](/images/oslLoadDrivers/add_data_table_entry.jpg "Add entry LDR_TABLE")
 
-Finalmente se van a colocar el *Flink* y el *Blink* de la ```LIST_ENTRY``` de forma que apunten a la entrada anterior y al principio de la la lista y se va a proceder a cargar los imports del Driver que se ha cargado. De esto se va a encargar la funcion ```LdrpLoadImports``` que no voy a detallar porque funciona igual en Userland, para que os hagais una idea obtiene el ```IMAGE_DATA_DIRECTORY``` de la tabla de imports y con esto obtiene el ```IMAGE_IMPORT_DESCRIPTOR``` y a continuacion itera llamando a ```LdrpLoadImage``` para cargar la imagen y a ```BlLdrBindImportReferences``` para enlazar los imports al binario y eso seria todo, ahora se empezaria a salir de las funciones hasta volver a la funcion ```OslLoadDrivers``` que es la encargada  de asignar los campos *DriverLoadNtStatus* y se devuelve el *NTSTATUS* correspondiente a la funcion que ha intentado cargar el Driver (En este caso ```OslpLoadAllModules```) 
+Finalmente se van a colocar el *Flink* y el *Blink* de la ```LIST_ENTRY``` de forma que apunten a la entrada anterior y al principio de la la lista y se va a proceder a cargar los imports del Driver que se ha cargado. De esto se va a encargar la funcion ```LdrpLoadImports``` que no voy a detallar porque funciona igual en Userland, para que os hagais una idea obtiene el ```IMAGE_DATA_DIRECTORY``` de la tabla de imports y con esto obtiene el ```IMAGE_IMPORT_DESCRIPTOR``` y a continuacion itera llamando a ```LdrpLoadImage``` para cargar la imagen y a ```BlLdrBindImportReferences``` para enlazar los imports al binario y eso seria todo, ahora se empezaria a salir de las funciones hasta volver a la funcion ```OslLoadDrivers``` que es la encargada  de asignar el campo *DriverLoadNtStatus* y se devuelve el *NTSTATUS* correspondiente a la funcion que ha intentado cargar el Driver (En este caso ```OslpLoadAllModules```) 
 
 Aqui podeis ver como quedaria la estructura _BOOT_DRIVER_LIST_ENTRY una vez se ha cargar el ELAM Driver de Windows:
 
-![alt img](/images/oslLoadDrivers/add_data_table_entry.jpg "Add entry LDR_TABLE")
+![alt img](/images/oslLoadDrivers/boot_driver_entry.jpg "Boot Driver entry")
 
+Siento mis dotes con el Paint, si haceis zoom se ven mejor los colores!! El DriverTag es 0xFFFFFFFF porque el Driver WdBoot no tiene clave DriverTag en el registro.
 
 ## Conclusiones
 
