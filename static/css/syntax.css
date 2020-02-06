@@ -57,3 +57,40 @@
 /* GenericInserted */ .chroma .gi { color: #a6e22e }
 /* GenericStrong */ .chroma .gs { font-weight: bold }
 /* GenericSubheading */ .chroma .gu { color: #75715e }
+
+.highlight-wrapper {
+    position: relative;
+}
+
+.highlight-link {
+    right: 0;
+    left: 0;
+    bottom: 0;
+    color: white;
+    padding-right: 4%;
+    padding-top: 15px;
+    text-align: right;
+    position: absolute;
+    padding-bottom: 5px;
+    background: linear-gradient(rgba(237,245,251,0),#2d2d2ded 30%)
+}
+
+.highlight-link a:hover {
+    color: #f92672;
+}
+
+.post {
+    text-align: justify;
+    line-height: 1.7;
+    font-size: 15pt;
+    max-width: 1000px;
+}
+
+code {
+    font-size: 12pt;
+}
+
+img {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}

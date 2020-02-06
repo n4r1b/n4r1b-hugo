@@ -32,6 +32,8 @@ disableSitemap = false
 disable404     = false
 disableHugoGeneratorInject = false
 
+googleAnalytics = "UA-157901457-1"
+
 [blackfriday] 
   hrefTargetBlank = true
 
@@ -55,7 +57,7 @@ disableHugoGeneratorInject = false
   homeSubtitle = "n4r1b"
 
   customCSS = ["/css/syntax.css"]
-  customJS  = []
+  customJS  = ["/js/script.js"]
 
   # Toggle this option need to rebuild SCSS, requires extended version of Hugo
   justifyContent = false  # Set "text-align: justify" to .content.
