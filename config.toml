@@ -40,6 +40,10 @@ googleAnalytics = "UA-157901457-1"
 [permalinks]
   posts = "/posts/:year/:month/:title/"
 
+[markup.goldmark.renderer]
+  unsafe= true
+
+
 [author]
   name = "n4r1b"
 
@@ -81,11 +85,11 @@ googleAnalytics = "UA-157901457-1"
     url  = "https://github.com/n4r1b"
 
 [languages]
-  [languages.es]
+  [languages.en]
     subtitle  = "n4r1b"
     weight    = 1
 
-  [languages.en]
+  [languages.es]
     subtitle  = "n4r1b"
     weight    = 2
 
@@ -94,8 +98,8 @@ googleAnalytics = "UA-157901457-1"
   [[menu.main]]
     identifier = "about"
     name       = "About"
-    url        = "about/"
+    url        = "en/about/"
   [[menu.main]]
     identifier = "posts"
     name       = "Posts"
-    url        = "posts/"
+    url        = "en/posts/"

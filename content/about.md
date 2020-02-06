@@ -10,10 +10,9 @@ aliases = ["about-us","about-me","contact"]
 
 <table border="0">
  <tr>
-    <td><img src="/images/avatar.jpg" style="border: 2px solid #a9a9b3; width:150px; border-radius: 50%" alt="Avatar"></td>
-    <td style="width: 450px;padding-left: 15px;padding-top: 15px;">
-        Actualmente trabajo en una compañía como Analista de Malware, soy un entusiasta de la seguridad. Ah.. También me gustan las motos y los comics entre otras cosas 😃😃<br/>
-        Windows | OSX
+    <td><img src="/images/avatar.jpg" style="border: 2px solid #a9a9b3; border-radius: 50%" alt="Avatar"></td>
+    <td style="padding-left: 15px;padding-top: 15px;">
+        Entusiasta de Windows Internal y todo lo relacionado con el kernel. También me gustan las motos y los comics entre otras cosas 😃😃        
     </td>
  </tr>
 </table>
