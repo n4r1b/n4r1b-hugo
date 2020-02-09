@@ -48,7 +48,7 @@ this function also sets does the mapping of the physical to the virtual addresse
 
 > **Curious fact:** Quarkslab presented a POC of a Bootkit in 2013, [Dreamboot](https://github.com/quarkslab/dreamboot) which relies on hooking the function `OslArchTransferToKernel`. At this point, in memory we can find all the structures the kernel needs to work by itself, so clearly is a good moment to have a "hook"
 
-> More info on their pare (French) https://www.sstic.org/media/SSTIC2013/SSTIC-actes/dreamboot_et_uefi/SSTIC2013-Article-dreamboot_et_uefi-kaczmarek.pdf
+> More info on their paper (French) https://www.sstic.org/media/SSTIC2013/SSTIC-actes/dreamboot_et_uefi/SSTIC2013-Article-dreamboot_et_uefi-kaczmarek.pdf
 
 ## Conclusions
 
