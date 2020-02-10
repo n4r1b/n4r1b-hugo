@@ -13,9 +13,9 @@ slug =  "Dissecting the Windows Defender Driver - WdFilter (Part 1)"
 type = "posts"
 +++
 
-I'm back again! For the next couple (Or maybe more) posts I'll be explaining how WdFilter works. I've always been very interested on how AVs work (Nowadays I would say EDRs though) and their development at kernel level. And since unfortunately I don't have access to the source code of any my only chance is to reverse them (Or to write my own 😆). And of course what a better product to check than the one written by the company who developed the OS.
+I'm back again! For the next couple (Or maybe more) posts I'll be explaining how WdFilter works. I've always been very interested on how AVs work (Nowadays I would say EDRs though) and their development at kernel level. And since, unfortunately I don't have access to the source code of any, my only chance is to reverse them (Or to write my own 😆). And of course what a better product to check than the one written by the company who developed the OS.
 
-For those who don't know, WdFilter is the main kernel component of Windows Defender. Roughly, this Driver works as a Minifilter from the load order group "FSFilter Anti-Virus", this means that is attached to the File System stack (Actually, quite high - Big Altitude) and handles I/O operations in some Pre/Post callbacks. Not only that, this driver also implements other techniques to get information of what's going on in the system. The goal of this serie of post is to have a solid understanding on how this works under the hood.
+For those who don't know, WdFilter is the main kernel component of Windows Defender. Roughly, this Driver works as a Minifilter from the load order group "FSFilter Anti-Virus", this means that is attached to the File System stack (Actually, quite high - Big Altitude) and handles I/O operations in some Pre/Post callbacks. Not only that, this driver also implements other techniques to get information of what's going on in the system. The goal of this series of post is to have a solid understanding on how this works under the hood.
 
 > A couple of remarks before moving forward. I'll try to put together all the posts in a way that it makes sense, but since there are many components, flags and structures involved in many places some things may not be clear at first. Also since I'm still working on reversing the driver so I apologize in advance for not having all the structures fully reversed and same applies to flags I'll try to post some header files on my Github and keep them updated :)
 
@@ -30,13 +30,13 @@ So without further ado, let's get into the `DriverEntry`. As we saw with **WdBoo
 ![alt image](/images/wdFilter/part1/OsVersion.png "OS Version Mask")
 
 
-Also inside this function some pointers to function will be obtained, specifically inside `MpGetSystemRoutines`, this function will use `MmGetSystemRoutineAddress` and save the returned address into **MpData**. -- The *OsVersionMask* field comes into play here, because some pointers will only be obtained in certain OS versions, for example `FltRequestFileInfoOnCreateCompletion` will only be retreived if running Windows 10 build 17726 or higher -- Going back to the initialization function, one last thing it will do is to create the following SIDs:
+Also inside this function some pointers to function will be obtained, specifically inside `MpGetSystemRoutines`, this function will use `MmGetSystemRoutineAddress` and save the returned address into **MpData**. -- The *OsVersionMask* field comes into play here, because some pointers will only be obtained in certain OS versions, for example `FltRequestFileInfoOnCreateCompletion` will only be retrieved if running Windows 10 build 17726 or higher -- Going back to the initialization function, one last thing it will do is to create the following SIDs:
 
 - MpServiceSID
 - NriServiceSID
 - TrustedInstallerSID
 
-After this, the initialization of **MpData** is completed, even though there's still plenty of members that will be filled in other functions, here you can see this **Huge** strucuture -- Still missing **A LOT** of fields.
+After this, the initialization of **MpData** is completed, even though there's still plenty of members that will be filled in other functions, here you can see this **Huge** structure -- Still missing **A LOT** of fields.
 
 {{< more C >}}
 typedef struct _MP_DATA
@@ -244,7 +244,7 @@ the following image shows some entries of this array:
 
 ![alt image](/images/wdFilter/part1/MpConfigParams.png "MP_CONFIG_PARAMS array")
 
-As you can see the second member of this structure is a pointer inside the structure `MP_CONFIG`, this address is the one that's gonna be set as the `EntryContext` in the `QueryTable`. Finally, the function will call `RtlQueryRegistryValuesEx` with the registry path being `HKLM\System\CurrentControlSet\Services\WdFilter\Parameters` after this call has been made the values returned in the `EntryContext` will be check to see if they match some criterias, if they don't match they will be set to their default value. The `MP_CONFIG` has the following definition:
+As you can see the second member of this structure is a pointer inside the structure `MP_CONFIG`, this address is the one that's gonna be set as the `EntryContext` in the `QueryTable`. Finally, the function will call `RtlQueryRegistryValuesEx` with the registry path being `HKLM\System\CurrentControlSet\Services\WdFilter\Parameters` after this call has been made the values returned in the `EntryContext` will be check to see if they match some criteria, if they don't match they will be set to their default value. The `MP_CONFIG` has the following definition:
 
 {{< more C>}}
 // Sizeof 0x5C
@@ -285,7 +285,7 @@ Last thing regarding initialization of **MpData** is to initialize things relate
 
 From now on, the code will start initializing **a lot** of different structures, each one meant for something different, I'll mention all of them but for this post I'll focus only on some of them. First function is `MpInitializeProcessTable`, as the name implies this function will initialize a structure that will keep track of the process in the system, to do this it will allocate a pool of size `0x800` that will contain an array of `LIST_ENTRY` -- Each list entry is of size `0x10` so we have `0x80` entries in the array -- this `LIST_ENTRY` is actually a shifted pointer into the structure I named `ProcessCtx` that contains the information regarding a process. The definition of the process table looks something like this: 
 
-{{< more C >}}
+```C
 typedef struct _MP_PROCESS_TABLE
 {
   SHORT Magic;  // Set to 0xDA13
@@ -301,7 +301,7 @@ typedef struct _MP_PROCESS_TABLE
   INT Unk;
   INT CreateThreadNotifyLock;
 } MP_PROCESS_TABLE, *PMP_PROCESS_TABLE;
-{{< /more >}}
+```
 
 After this, the `DriverEntry` will call `MpInitBootSectorCache` which will allocate a pool of size `0x64` and tag `MPgb` and save a pointer in `MpData->pBootSectorCache` -- We'll see more about the checks of the Boot sector in another post. 
 
@@ -313,7 +313,7 @@ Then, based on the value saved on `MpConfig.MaxCopyCacheSize` another pool will 
 
 - The transactional NTFS structure, which will be initialized inside `MpTxfInitialize` with a size of `0x140`, tag `MPtd` and saved in a global I named `MpTxfData`.
 
-- Async worker thread alongside the Async structure, this will be initialized inside `MpAsyncInitialize` and the structure will mainly keep two list entries of messages that are enqueued to be sent by the async worker thread. This thread is initialized inside this function too, an the function `MpAsyncpWorkerThread` is set as the StartRoutine of it.
+- Async worker thread alongside the Async structure, this will be initialized inside `MpAsyncInitialize` and the structure will mainly keep two list entries of messages that are enqueued to be sent by the async worker thread. This thread is initialized inside this function too, and the function `MpAsyncpWorkerThread` is set as the StartRoutine of it.
 
 - The registry data structure, which will be initialized inside `MpRegInitialize`, of size `0x500` and tag `MPrD`. This is another big and important structure that will be used mainly in the RegistryCallback -- We will get into this callback in the next post.
 
@@ -349,7 +349,7 @@ After setting the the Image Verification callback the driver will start filterin
 
 ## MpSetProcessNotifyRoutine
 
-The first callback registration we will dig into is the process creation, this callback is register inside `MpSetProcessNotifyRoutine`. First thing this function will do is check if [`PsSetCreateProcessNotifyRoutineEx2`](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-pssetcreateprocessnotifyroutineex2) is availabe (Windows 10 build 14980 - `OsVersionMask & 0x80`), in case it is then it will use this function to register the callback, if is not availabe then it will check [`PsSetCreateProcessNotifyRoutineEx`](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-pssetcreateprocessnotifyroutineex) lastly if this one isn't avaialable either then it will resort in [`PsSetCreateProcessNotifyRoutine`](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-pssetcreateprocessnotifyroutine). Once one of the callback routine has been registered, the code will then proceed to create two callback objects `\Callback\WdProcessNotificationCallback` and `\Callback\WdNriNotificationCallback`. For the latter, the code will also register a callback function -- `MpNriNotificationCallback`
+The first callback registration we will dig into is the process creation, this callback is register inside `MpSetProcessNotifyRoutine`. First thing this function will do is check if [`PsSetCreateProcessNotifyRoutineEx2`](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-pssetcreateprocessnotifyroutineex2) is available (Windows 10 build 14980 - `OsVersionMask & 0x80`), in case it is then it will use this function to register the callback, if is not available then it will check [`PsSetCreateProcessNotifyRoutineEx`](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-pssetcreateprocessnotifyroutineex) lastly if this one isn't available either then it will resort in [`PsSetCreateProcessNotifyRoutine`](https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-pssetcreateprocessnotifyroutine). Once one of the callback routine has been registered, the code will then proceed to create two callback objects `\Callback\WdProcessNotificationCallback` and `\Callback\WdNriNotificationCallback`. For the latter, the code will also register a callback function -- `MpNriNotificationCallback`
 
 > To get more information on this Callback Objects and others, make sure to check the research [0xcpu](https://twitter.com/0xcpu) and I have been conducting on them https://github.com/0xcpu/ExecutiveCallbackObjects
 
@@ -431,7 +431,7 @@ typedef struct _ProcessCtx
 } ProcessCtx, *PProcessCtx;
 {{< /more >}}
 
-Once the Process Context (ProcessCtx from now on) has been retreived or created, the function will proceed to see if a doc rule should be attached to this Process. This is done inside `MpSetProcessDocOpenRule` and there are two structures involved. One that keeps a list of all the documents rules and one for each rule.
+Once the Process Context (ProcessCtx from now on) has been retrieved or created, the function will proceed to see if a doc rule should be attached to this Process. This is done inside `MpSetProcessDocOpenRule` and there are two structures involved. One that keeps a list of all the documents rules and one for each rule.
 
 {{< more C >}}
 
