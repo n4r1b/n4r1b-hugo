@@ -3,7 +3,7 @@ title = "Up is Down and Black is White"
 
 theme = "hello-friend-ng"
 
-DefaultContentLanguage = "es"
+DefaultContentLanguage = "en"
 
 pygmentsCodefences = true
 pygmentsUseClasses = true
