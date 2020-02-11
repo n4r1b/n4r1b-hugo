@@ -98,8 +98,8 @@ googleAnalytics = "UA-157901457-1"
   [[menu.main]]
     identifier = "about"
     name       = "About"
-    url        = "en/about/"
+    url        = "/about/"
   [[menu.main]]
     identifier = "posts"
     name       = "Posts"
-    url        = "en/posts/"
+    url        = "/posts/"
