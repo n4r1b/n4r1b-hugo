@@ -31,7 +31,7 @@ HUGO_VERSION = "0.54.0"
 HUGO_ENABLEGITINFO = "true"
 
 [[redirects]]
-  from = "/en/posts/2020/01/dissecting-the-windows-defender-driver-wdfilter-part-1"
-  to = "/posts/2020/01/dissecting-the-windows-defender-driver-wdfilter-part-1"
+  from = "/en/*"
+  to = "/:splat"
   status = 301
   force = false
