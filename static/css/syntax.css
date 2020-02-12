@@ -87,7 +87,7 @@
 }
 
 code {
-    font-size: 14pt;
+    font-size: 13pt;
 }
 
 img {
@@ -105,6 +105,10 @@ img {
         -ms-hyphens: auto;
         -moz-hyphens: auto;
         hyphens: auto;
+    }
+
+    code {
+        font-size: 11pt;
     }
     
 }
