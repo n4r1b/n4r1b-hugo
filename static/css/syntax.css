@@ -94,3 +94,17 @@ img {
     margin-left: auto !important;
     margin-right: auto !important;
 }
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .post {
+        text-align: left;
+        font-size: 13pt;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        hyphens: auto;
+    }
+    
+}
