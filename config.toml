@@ -58,7 +58,7 @@ googleAnalytics = "UA-157901457-1"
   keywords = "RE, blog, Reversing, Security, Kernel, infosec"
   images = ["https://n4r1b.netlify.com/images/cover.jpg"]
 
-  gitUrl = "https://github.com/n4r1b/n4r1b-hugo/commits" 
+  gitUrl = "https://github.com/n4r1b/n4r1b-hugo/commits/" 
 
   homeSubtitle = "n4r1b"
 
