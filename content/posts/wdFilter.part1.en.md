@@ -81,7 +81,7 @@ typedef struct _MP_DATA
   PFLT_PORT FltProtectionAsyncPort;
   PFLT_PORT ProtectionAsyncServerCookie;
   INT SomeScanFileFlag;
-  INT field_10C;
+  INT SendSyncNotificationFlag;
   KSEMAPHORE ScanFileSemaphore1;
   KSEMAPHORE ScanFileSempahore2;
   KSEMAPHORE SendingSyncSemaphore;
