@@ -3,8 +3,8 @@ categories = ["WdFilter", "MiniFilter", "Windows Defender", "Microsoft Security"
 tags = ["WdFilter", "MiniFilter", "Windows Defender", "Microsoft Security"]
 date = "2020-01-29"
 description = "In this series of posts I'll be explaining how the Windows Defender main Driver works, in this first post we will look into the initialization and the Process creation notifications among other things"
-images = ["https://n4r1b.netlify.com/images/wdFilter/part1/WdFilterPart1.jpg"]
-featured = ["https://n4r1b.netlify.com/images/wdFilter/part1/WdFilterPart1.jpg"]
+images = ["https://n4r1b.netlify.com/images/wdFilter/WdFilter.jpg"]
+featured = ["https://n4r1b.netlify.com/images/wdFilter/WdFilter.jpg"]
 featuredalt = ""
 featuredpath = "date"
 linktitle = ""
@@ -206,7 +206,7 @@ typedef struct _MP_DATA
   BYTE OpenWithoutReadNotificationFlag;
   RTL_GENERIC_TABLE RtlGenericTable;
   FAST_MUTEX WdFilterGenericTableMutex;
-  MP_SYNC_NOTIFICATIONS_STATUS SyncNotificationsStatus[8];
+  MP_SYNC_NOTIFICATIONS_STATUS SyncNotifications[8];
   INT SyncNotificationRecvCount[8];
   INT SyncNotificationsCount[8];
   INT SyncNotificationsStatus[8];
@@ -214,7 +214,7 @@ typedef struct _MP_DATA
   INT SyncNotificationsRecvErrorCount[8];
   INT MonitorNotificationFlag;
   INT field_B84;
-  INT64 MonitorNotificationsCount;
+  INT64 SyncMonitorNotificationTimeout;
   INT64 RandNumber;
   BYTE MpEaString[256];
   INT AsyncDirectoryNotificationFlag;
@@ -417,7 +417,7 @@ typedef struct _ProcessCtx
   INT NotificationsSent;
   INT field_68;
   INT field_6C;
-  PVOID ImageBase;
+  PVOID Wow64CpuImageBase;
   INT ProcessSubsystemInformation;
   PUNICODE_STRING ImageFileName;
   INT64 InfoSetFromUserSpace;   // This requires further investigation too
