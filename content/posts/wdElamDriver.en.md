@@ -29,7 +29,7 @@ After initializing WPP, the code will proceed to try an delete the value `ElamIn
 
 ```c
 // sizeof(MP_EP_GLOBALS) == 0xB0
-struct __declspec(align(4)) MP_EP_GLOBALS
+typedef struct _MP_EP_GLOBALS
 {
   UNICODE_STRING RegistryPath;
   PVOID pHandleRegistration;
@@ -37,9 +37,8 @@ struct __declspec(align(4)) MP_EP_GLOBALS
   DWORD Magic; // Set to 0x28EB01
   DWORD SignaturesVersionMajor;
   DWORD SignaturesVersionMinor;
-  DWORD Unk_Unused;
   LIST_ENTRY DriversListEntry;
-  PSLIST_ENTRY pSlistEntry;
+  PSLIST_ENTRY ElamRegistryEntries;
   PCALLBACK_OBJECT pWdCallbackObject;
   LARGE_INTEGER Cookie;
   _QWORD Unk_Unused1;
@@ -52,9 +51,8 @@ struct __declspec(align(4)) MP_EP_GLOBALS
   BYTE FlagWdOrMp;
   BYTE FlagTestMode;
   BYTE FlagPersistElamInfo;
-  BYTE Alignment;
   _QWORD Unk_Unused2;
-};
+} MP_EP_GLOBALS, *PMP_EP_GLOBALS;
 ```
 
 This structure will be first set to zero, then the Magic, DriversListEntry, SlistHeader, FlagWdOrMp, FlagTestMode and RegistryPath will be all init/set.  
@@ -360,7 +358,7 @@ Finally, this routine will link the `DriversListEntry` from the `MpEbGlobals` va
 
 
 ## Conclusions
-And that's more or less how the Windows Defender ELAM driver works. A couple more things regarding this technology. First of all, it doesn't provide security agains bootkits (There are other things for that, but not ELAM), also ELAM drivers must be signed with the Early Launch EKU "1.3.6.1.4.1.311.61.4.1" and only Microsoft can sign certificates with this signature and only Anti-Malware vendors qualify for it so is not really something for general use. Finally the default policy is set to `PNP_INITIALIZE_BAD_CRITICAL_DRIVERS`, which means Unknown and BadButCritical drivers will be allowed to initialize this can be changed in the registry 
+And that's more or less how the Windows Defender ELAM driver works. A couple more things regarding this technology. First of all, it doesn't provide security again bootkits (There are other things for that, but not ELAM), also ELAM drivers must be signed with the Early Launch EKU "1.3.6.1.4.1.311.61.4.1" and only Microsoft can sign certificates with this signature and only Anti-Malware vendors qualify for it so is not really something for general use. Finally the default policy is set to `PNP_INITIALIZE_BAD_CRITICAL_DRIVERS`, which means Unknown and BadButCritical drivers will be allowed to initialize this can be changed in the registry 
 
 > `HKLM\System\CurrentControlSet\Control\EarlyLaunch\DriverLoadPolicy`
 
@@ -370,7 +368,7 @@ So, that's all folks. As always I really hope you learnt something and managed t
 
 ### <a name="WdEbNotificationCallback"></a> Bonus: WdEbNotificationCallback
 
-In this section I will explain a bit on what happens when the `WdEbNotificationCallback` is notified, which driver regsiter for this callback and what parameters it receives.
+In this section I will explain a bit on what happens when the `WdEbNotificationCallback` is notified, which driver register for this callback and what parameters it receives.
 
 > If you are interested in ExecutiveCallbackObjects and want to dig more into them, make sure to check the investigation [0xcpu](https://twitter.com/0xcpu) and me are doing on them (And feel free to contribute)
 >
@@ -380,7 +378,7 @@ As we saw before, this callback is notified inside the `MpEbBootDriverCallback` 
 
 > This function notifies every registered routine for the callback object that is specified as the first parameter. Parameter two and three will be passed to the callback routine as Argument1 and Argument2.
 
-If we search for occurrences of the string `\Callback\WdEbNotificationCallback` insided `Systemroot\System32`, we will see besides `WdBoot` we also find a match on `WdFilter`. So cross-referencing this string on `WdFilter` we can find that function `MpInitializeDriverInfo` is registering the function `MpBootDriverCallback` for this callback object ([`ExRegisterCallback`](https://docs.microsoft.com/en-gb/windows-hardware/drivers/ddi/wdm/nf-wdm-exregistercallback)). So let's take a quick look into the function `MpBootDriverCallback`:
+If we search for occurrences of the string `\Callback\WdEbNotificationCallback` inside `Systemroot\System32`, we will see besides `WdBoot` we also find a match on `WdFilter`. So cross-referencing this string on `WdFilter` we can find that function `MpInitializeDriverInfo` is registering the function `MpBootDriverCallback` for this callback object ([`ExRegisterCallback`](https://docs.microsoft.com/en-gb/windows-hardware/drivers/ddi/wdm/nf-wdm-exregistercallback)). So let's take a quick look into the function `MpBootDriverCallback`:
 
 ![alt image](/images/wdELAM/MpBootDriverCallback.png "MpBootDriverCallback")
 

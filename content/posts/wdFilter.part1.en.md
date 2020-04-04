@@ -127,7 +127,7 @@ typedef struct _MP_DATA
   INT MaxLocalScanTimeout;
   INT MaxNetworkScanTimeout;
   INT field_6A8;
-  INT field_6AC;
+  INT UnsetObAndRegCallback;
   BYTE RawVolumeWriteFlag;
   BYTE MpOrWdFlag;
   BYTE field_6B2;
@@ -415,17 +415,15 @@ typedef struct _ProcessCtx
   BOOLEAN (__fastcall *pCsrssPreScanHook)(PFLT_CALLBACK_DATA, FltStreamCtx *);
   INT field_60;
   INT NotificationsSent;
-  INT field_68;
+  INT InjectionsHandlesCount;
   INT field_6C;
   PVOID Wow64CpuImageBase;
   INT ProcessSubsystemInformation;
   PUNICODE_STRING ImageFileName;
-  INT64 InfoSetFromUserSpace;   // This requires further investigation too
-  INT64 InfoSetFromUserSpace1;  // This data is filled in the function
-  INT64 InfoSetFromUserSpace2;  // MpSetProcessInfoByContext which uses
-  INT64 InfoSetFromUserSpace3;  // data that comes from MsMpEng to populate
-  INT64 InfoSetFromUserSpace4;  // this fields
-  INT64 InfoSetFromUserSpace5;
+  BYTE HipRules[16];
+  BYTE HipRules1[16];
+  QWORD field_A8;
+  QWORD field_B0;
   _PS_PROTECTION ProcessProtection;
   INT StreamHandleCtxCount;
 } ProcessCtx, *PProcessCtx;
