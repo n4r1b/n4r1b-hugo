@@ -83,4 +83,4 @@ I hope everything is more or less clear, I've tried to explain everything in the
 And that's all folks. Until the next! 🤪🤪
 
 **Note1: Every image of windbg has been taken from a remote kernel debugging of a Virtual Machine running Windows 8.1 Pro**<br/><br/>
-**Note2: At least on my VMware eveytime I tried to step into or break into the instruction ```swapgs``` it caused a fault error on my virtual machine. I haven't researched on this topic but if anyone know why this happens please let me know!**
+**~~Note2: At least on my VMware eveytime I tried to step into or break into the instruction ```swapgs``` it caused a fault error on my virtual machine. I haven't researched on this topic but if anyone know why this happens please let me know!~~** @[fdiskyou](https://twitter.com/fdiskyou) reach out and gave me an explanation -- Much appreciated and all the credit goes out to him -- The problem is there's a 'gs' in user mode and a 'gs' in kernel mode and the debugger gets "confused" and can't handle it. Just don't breakpoint or trace it
