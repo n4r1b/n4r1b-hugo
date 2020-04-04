@@ -1,7 +1,7 @@
 +++
 categories = ["WdFilter", "MiniFilter", "Windows Defender", "Microsoft Security"]
 tags = ["WdFilter", "MiniFilter", "Windows Defender", "Microsoft Security"]
-date = "2020-02-23"
+date = "2020-03-23"
 description = "In this series of posts I'll be explaining how the Windows Defender main Driver works, in this third post we will look into the callback routine for process/desktop handle operations and also into everything related to drivers information and verification"
 images = ["https://n4r1b.netlify.com/images/wdELAM/wdElam.png"]
 featured = ["https://n4r1b.netlify.com/images/wdELAM/wdElam.png"]
@@ -53,7 +53,7 @@ ObCbRegistration.OperationRegistration = OperationRegistration;
 
 In the previous pseudocode we can see how two entries (In case of Windows 10) are being added into the array, both of the operations register the same *PreOperation* and no *PostOperation*, also both register to handle creation and duplication. Now we are going to focus on the *PreOperation* function `MpObPreOperationCallback`
 
-> To learn much more than what I explained about all this structure and other cool stuff I strongly recommend this post https://rayanfam.com/topics/reversing-windows-internals-part1/ from [Sinaei](https://twitter.com/Intel80x86) to learn much more about this.
+> To learn much more than what I explained about all this structure and other cool stuff I strongly recommend this post https://rayanfam.com/topics/reversing-windows-internals-part1/ from [Sinaei](https://twitter.com/Intel80x86).
 
 #### MpObPreOperationCallback
 
