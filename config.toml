@@ -1,4 +1,4 @@
-baseURL = "https://n4r1b.netlify.com"
+baseURL = "https://n4r1b.com"
 title = "Up is Down and Black is White"
 
 theme = "hello-friend-ng"
@@ -56,7 +56,7 @@ googleAnalytics = "UA-157901457-1"
   # Metadata mostly used in document's head
   description = "Reverse Engineer blog by n4r1b"
   keywords = "RE, blog, Reversing, Security, Kernel, infosec"
-  images = ["https://n4r1b.netlify.com/images/cover.jpg"]
+  images = ["https://n4r1b.com/images/cover.jpg"]
 
   gitUrl = "https://github.com/n4r1b/n4r1b-hugo/commit/" 
 

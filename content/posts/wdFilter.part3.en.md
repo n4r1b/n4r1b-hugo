@@ -3,8 +3,8 @@ categories = ["WdFilter", "MiniFilter", "Windows Defender", "Microsoft Security"
 tags = ["WdFilter", "MiniFilter", "Windows Defender", "Microsoft Security"]
 date = "2020-03-23"
 description = "In this series of posts I'll be explaining how the Windows Defender main Driver works, in this third post we will look into the callback routine for process/desktop handle operations and also into everything related to drivers information and verification"
-images = ["https://n4r1b.netlify.com/images/wdELAM/wdElam.png"]
-featured = ["https://n4r1b.netlify.com/images/wdELAM/wdElam.png"]
+images = ["https://n4r1b.com/images/wdELAM/wdElam.png"]
+featured = ["https://n4r1b.com/images/wdELAM/wdElam.png"]
 featuredalt = ""
 featuredpath = "date"
 linktitle = ""
@@ -316,7 +316,7 @@ once the entry is initialized is then chained into the list `MP_DRIVERS_INFO->Bo
 
 #### MpBootDriverCallback
 
-Now that we know how those two list entries are filled we will start looking into the callback function registered during the initialization. As I already explained on my post about the [Windows Defender ELAM](https://n4r1b.netlify.com/posts/2019/11/understanding-wdboot-windows-defender-elam/) this callback is notified when in the boot driver callback function of the ELAM driver the `BDCB_CALLBACK_TYPE` is set to **BdCbStatusUpdate** and the image information has the `BDCB_CLASSIFICATION` set to **BdCbClassificationKnownBadImage**. If this conditions are met then the callback will be notified with *Argument1* being a pointer to the main **WdBoot** structure, `MP_EB_GLOBALS`, and *Argument2* set to the constant `0x28`.
+Now that we know how those two list entries are filled we will start looking into the callback function registered during the initialization. As I already explained on my post about the [Windows Defender ELAM](https://n4r1b.com/posts/2019/11/understanding-wdboot-windows-defender-elam/) this callback is notified when in the boot driver callback function of the ELAM driver the `BDCB_CALLBACK_TYPE` is set to **BdCbStatusUpdate** and the image information has the `BDCB_CLASSIFICATION` set to **BdCbClassificationKnownBadImage**. If this conditions are met then the callback will be notified with *Argument1* being a pointer to the main **WdBoot** structure, `MP_EB_GLOBALS`, and *Argument2* set to the constant `0x28`.
 
 So getting into `MpBootDriverCallback`, first thing it will do is a sanity check on *Argument1* and *Argument2*, for the latter it will check if is equal to `0x28` while for the former it will check that the *Magic* of the structure is `0xEB01`. If both checks are fine, then it will proceed to iterate the over the list of drivers that was created by **WdBoot** and for every driver it will call `MpCopyDriverEntry`, which will mainly copy the driver entry data into a `MP_DRIVER_INFO` structure that will be then chained to `MP_DRIVERS_INFO->LoadedDriversList`. 
 

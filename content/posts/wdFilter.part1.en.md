@@ -3,8 +3,8 @@ categories = ["WdFilter", "MiniFilter", "Windows Defender", "Microsoft Security"
 tags = ["WdFilter", "MiniFilter", "Windows Defender", "Microsoft Security"]
 date = "2020-01-29"
 description = "In this series of posts I'll be explaining how the Windows Defender main Driver works, in this first post we will look into the initialization and the Process creation notifications among other things"
-images = ["https://n4r1b.netlify.com/images/wdFilter/WdFilter.jpg"]
-featured = ["https://n4r1b.netlify.com/images/wdFilter/WdFilter.jpg"]
+images = ["https://n4r1b.com/images/wdFilter/WdFilter.jpg"]
+featured = ["https://n4r1b.com/images/wdFilter/WdFilter.jpg"]
 featuredalt = ""
 featuredpath = "date"
 linktitle = ""
@@ -321,7 +321,7 @@ Then, based on the value saved on `MpConfig.MaxCopyCacheSize` another pool will 
 
 - Folder Guard structure, which is initialized inside `MpFgInitialize` only on systems running Windows 10 build 16000 or higher has a size of `0x240`, tag `MPFg` and saved in the global `MpFolderGuard`. The structure will keep a pointer to a **RTL_AVL_TABLE** table and a **RTL_GENERIC_TABLE** and it will be used mainly to allow or revoke access to files/folders.
 
-- Lastly, the drivers info structure, which is initialized inside `MpInitializeDriverInfo`, this structure is tied to the ELAM driver, and is the one that will be used mainly on the function registered for the callback `\Callback\WdEbNotificationCallback`. When we get into how this function and this structure is used we will be able to intertwine what we saw in the post about the [**WdBoot**](https://n4r1b.netlify.com/en/posts/2019/11/understanding-wdboot-windows-defender-elam/) with what **WdFilter** does with that data.
+- Lastly, the drivers info structure, which is initialized inside `MpInitializeDriverInfo`, this structure is tied to the ELAM driver, and is the one that will be used mainly on the function registered for the callback `\Callback\WdEbNotificationCallback`. When we get into how this function and this structure is used we will be able to intertwine what we saw in the post about the [**WdBoot**](https://n4r1b.com/en/posts/2019/11/understanding-wdboot-windows-defender-elam/) with what **WdFilter** does with that data.
 
 Reached this point we will find ourselves with a good amount of allocated pools and initialized structures:
 
