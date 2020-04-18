@@ -418,7 +418,7 @@ typedef struct _MP_REG_USER_DATA
 } MP_REG_USER_DATA, *PMP_REG_USER_DATA;
 ```
 
-With this data the function can start to search if the *KeyName* is included in the monitored keys, in order understand how this is done we first need to understand how the data is layout. First we need to know the definition of the structure I coined `MP_KEY_ENTRY`:
+With this data the function can start to search if the *KeyName* is included in the monitored keys, in order to understand how this is done we first need to understand how the data is laid out. First we need to know the definition of the structure I coined `MP_KEY_ENTRY`:
 
 ```C
 typedef struct _MP_KEY_ENTRY
@@ -529,7 +529,7 @@ Lastly, since this is super painful to debug I decided to practice my JavaScript
 - Create an instance of an MP_KEY_ENTRY, MP_KEY_VALUE or MP_CLIENT_VALUE
 
 ```C
-> dx Debugger.Utility.Analysis.WdFilterExtension.RegUserData()
+> dx Debugger.Utility.Analysis.WdFilterExtension.CreateInstance(typeName, addrObj)
 ```
 
 - List all the monitored keys
@@ -539,7 +539,7 @@ Lastly, since this is super painful to debug I decided to practice my JavaScript
 > dx Debugger.Utility.Analysis.WdFilterExtension.RegUserData()
 ```
 
-The script is not bulletproof, just wrote it to make the debugging easier for me, but it has many flaws (For example, not showing the whole key path to get to a specific `MP_KEY_ENTRY`) thou it comes in handy if we use it with [LINQ](https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/using-linq-with-the-debugger-objects) syntax to search for a specific *KeyName* or *ValueName*. For example we could run the following query to search for an entry that has the *KeyName* **MsMpEng.exe**, and then check which rules apply to this key.
+The script is not bulletproof, I just wrote it to make the debugging easier for me, but it has many flaws (For example, not showing the whole key path to get to a specific `MP_KEY_ENTRY`) thou it comes in handy if we use it with [LINQ](https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/using-linq-with-the-debugger-objects) syntax to search for a specific *KeyName* or *ValueName*. For example we could run the following query to search for an entry that has the *KeyName* **MsMpEng.exe**, and then check which rules apply to this key.
 
 ```js
 > dx -r1 @$mpRegUserData().MpRegUserData.MonitoredKeysTree.Select(p => new { 
@@ -614,6 +614,6 @@ Finally, the message will be sent either synchronously in case the `ProcessCtx->
 
 ## Conclusion
 
-And that's all for this part folks! Again sorry for the long post but I believe this is one of the coolest parts of the driver so I wanted to get a bit in depth with some things. The next post we will end up code non-related to the minifilter capabilities of the driver!! We will see the different messages **MsMpEng** can send to **WdFilter** in order to trigger different operations like adding a process to the excluded list or creating a section for a data scan! If this sounds cool, see ya in the next post! :)
+And that's all for this part folks! Again sorry for the long post but I believe this is one of the coolest parts of the driver so I wanted to get a bit in depth with some things. In the next post we will end up code non-related to the minifilter capabilities of the driver!! We will see the different messages **MsMpEng** can send to **WdFilter** in order to trigger different operations like adding a process to the excluded list or creating a section for a data scan! If this sounds cool, see ya in the next post! :)
 
 As always if there's any mistake or something not clear, please don't hesitate to reach out to me on twitter [@n4r1b](https://twitter.com/n4r1B)
