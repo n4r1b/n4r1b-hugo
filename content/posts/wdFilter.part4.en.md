@@ -125,7 +125,7 @@ If the process meets any of the previous checks then `MpRegHardeningIsMatch` won
 
 - Last path applies to all the other registry operations we saw before, and is quite simple. It will call `MpRegpGetKeyName` to get the object name to then call `MpRegHardeningIsMatch`
 
-> It's curious to see they use `ObQueryNameString` instead of `CmCallbackGetKeyObjectID`, the latter is available since Windows Vista. Which makes me wonder if this piece of code has been like this since Windows XP and maybe they updated it on Windows 8 to use `CmCallbackGetKeyObjectIDEx` which became available. Just a random thought 😁
+> It's curious to see they use `ObQueryNameString` instead of `CmCallbackGetKeyObjectID`, the latter is available since Windows Vista. Which makes me wonder if this piece of code comes from the Windows XP era and maybe they updated it on Windows 8 to use `CmCallbackGetKeyObjectIDEx` which became available. Just a random thought 😁
 
 Last step before starting with the actual processing of the operations is to check if the key involved matches one of the hardened keys. As already said this is done inside `MpRegHardeningIsMatch`, this function receives a unicode string as only parameter and it will iterate the list `MpRegData->ServiceKeyHardeningList` checking if the regkey passed as parameter match any of the list -- `RtlPrefixUnicodeString` -- if it does then it will return `TRUE`. If this function returns true, then no matter what type operation is being done the registry callback will return `STATUS_ACCESS_DENIED`
 
