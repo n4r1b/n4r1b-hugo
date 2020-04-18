@@ -161,7 +161,7 @@ The function will start by doing a sanity check on *CreateKeyInfo* and *CreateKe
 
 > `MpRegMatchData` is probably the most important function regarding registry operations and we will discuss it in detail later in the post, for now let's imagine that this function will check the *KeyName* against a list of keys and if found it will return the rules that apply to it
 
-if `MpRegMatchData` doesn't find a matching key then te function will return, on the other hand if a matching key is found then the code will check if **CreateDenied** (`0x10000`) is active for that key, if the value is active then it will proceed to check if the process trying to create the key match any of the following requirements:
+if `MpRegMatchData` doesn't find a matching key then the function will return, on the other hand if a matching key is found then the code will check if **CreateDenied** (`0x10000`) is active for that key, if the value is active then it will proceed to check if the process trying to create the key match any of the following requirements:
 
 - `ProcessCtx->ProcessRules` has **AllowAllRegistryOperations** (`0x400`) set.
 - The process is a ExcludedProcess (`ProcessCtx->ProcessFlags & 0x1`)
@@ -170,7 +170,7 @@ if `MpRegMatchData` doesn't find a matching key then te function will return, on
 
 if any of these requirements is met, then the access won't be denied, but if the process doesn't match the requirements then parameter *AccessDenied* will be set to `TRUE` and a notification throughout `MpRegpSendNotification` will be sent. 
 
-There's another case where they key rules don't have the **CreateDenied** bit set, but it has the **CreateKeyOperation** bit set. In this case, a **CallCtx** will be created. This **CallCtx** has a union which differs depending which type of operation is representing, for the creation the **CallCtx** will look like this:
+There's another case where they key rules don't have the **CreateDenied** bit set, but it has the **CreateKeyOperation** bit set. In this case, a **CallCtx** will be created. This **CallCtx** has a union which differs depending which type of operation is representing, for the key creation the **CallCtx** will be the following
 
 ```C
 typedef struct _CallCtx
