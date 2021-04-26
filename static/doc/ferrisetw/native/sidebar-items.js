@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["etw_types","Basic ETW types"],["evntrace","Native API - Event Tracing evntrace header"],["pla","Native API - Performance Logs and Alerts COM"],["tdh","Native API - Event Tracing tdh header"],["tdh_types","Basic TDH types"],["version_helper","Native API - Version Helper"]]});

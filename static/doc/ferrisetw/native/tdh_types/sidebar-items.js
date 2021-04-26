@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["TdhInType","Represent a TDH_IN_TYPE"],["TdhOutType","Represent a TDH_OUT_TYPE"]],"struct":[["Property","Attributes of a property"],["PropertyFlags","Represents the Property flags"]]});

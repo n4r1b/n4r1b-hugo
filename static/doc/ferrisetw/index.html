@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `ferrisetw` crate."><meta name="keywords" content="rust, rustlang, rust-lang, ferrisetw"><title>ferrisetw - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../ferrisetw/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate ferrisetw</p><div class='block version'><p>Version 0.1.1</p></div><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all ferrisetw's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'ferrisetw', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/ferrisetw/lib.rs.html#1-119' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>ferrisetw</a></span></h1><div class='docblock'><h1 id="event-windows-tracing-ftw" class="section-header"><a href="#event-windows-tracing-ftw">Event Windows Tracing FTW!</a></h1>
+<p><strong>Basically a rip off <a href="https://github.com/microsoft/krabsetw/">KrabsETW</a> written in Rust</strong>, hence the name <code>Ferris</code> 🦀</p>
+<p>All <strong>credits</strong> go to the team at Microsoft who develop KrabsEtw, without it, this project
+probably wouldn't be a thing.</p>
+<h1 id="whats-etw" class="section-header"><a href="#whats-etw">What's ETW</a></h1>
+<p>Event Tracing for Windows (ETW) is an efficient kernel-level tracing facility that lets you log
+kernel or application-defined events to a log file. You can consume the events in real time or
+from a log file and use them to debug an application or to determine where performance issues
+are occurring in the application. <a href="https://docs.microsoft.com/en-us/windows/win32/etw/about-event-tracing">Source</a></p>
+<p>ETW is made out of three components:</p>
+<ul>
+<li>Controllers</li>
+<li>Providers</li>
+<li>Consumers</li>
+</ul>
+<p>This crate provides the means to start and stop a controller, enable/disable providers and
+finally to consume the events within our own defined callback.</p>
+<h1 id="motivation" class="section-header"><a href="#motivation">Motivation</a></h1>
+<p>Even though ETW is a extremely powerful tracing mechanism, interacting with it is not easy by any
+means. There's a lot of details and caveats that have to be taken into consideration in order
+to make it work. On the other hand, once we manage to start consuming a trace session in real-time
+we have to deal with the process of finding the Schema and parsing the properties. All this process
+can be tedious and cumbersome, therefore tools like KrabsETW come in very handy to simplify the
+interaction with ETW.</p>
+<p>Since lately I've been working very closely with ETW and Rust, I thought that having a tool that
+would simplify ETW management written in Rust and available as a crate for other to consume would
+be pretty neat and that's where this crate comes into play 🔥</p>
+<h1 id="disclaimer" class="section-header"><a href="#disclaimer">Disclaimer</a></h1>
+<p>This project is still WIP. There's still plenty of things to evaluate/investigate and things to
+fix and do better. Any help would be greatly appreciated, also any issues you may have!</p>
+<p>Although I encourage everyone to use Rust, I do believe that, at the moment, if you plan on interacting
+with ETW in a production level and the programming language is not a constraint you should definitely
+consider <a href="https://github.com/microsoft/krabsetw/">KrabsETW</a> as a more robust and tested option. Hopefully in next iterations I'll be able
+to remove this disclaimer 😃</p>
+<h1 id="getting-started" class="section-header"><a href="#getting-started">Getting started</a></h1>
+<p>If you are familiar with KrabsEtw you'll see using the crate is very similar, in case you are not
+familiar with it the following example shows the basics on how to build a provider, start a trace
+and handle the Event in the callback</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">fn</span> <span class="ident">callback</span>(<span class="ident">record</span>: <span class="ident">EventRecord</span>, <span class="ident">schema_locator</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SchemaLocator</span>) {
+
+    <span class="comment">// Within the callback we first locate the proper Schema for the event</span>
+    <span class="kw">match</span> <span class="ident">schema_locator</span>.<span class="ident">event_schema</span>(<span class="ident">record</span>)
+    {
+        <span class="prelude-val">Ok</span>(<span class="ident">schema</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="comment">// At the moment we can only filter by checking the event_id</span>
+            <span class="kw">if</span> <span class="ident">schema</span>.<span class="ident">event_id</span>() <span class="op">=</span><span class="op">=</span> <span class="number">2</span> {
+                 
+                <span class="comment">// We build the Parser based on the Schema</span>
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parser</span> <span class="op">=</span> <span class="ident">Parser</span>::<span class="ident">create</span>(<span class="kw-2">&amp;</span><span class="ident">schema</span>);
+
+                <span class="comment">// Finally, Parse data from the Event, proper error handling should be done</span>
+                <span class="comment">// Type annotations or Fully Qualified Syntax are needed when calling TryParse</span>
+                <span class="comment">// Supported types implement the trait TryParse for Parser</span>
+
+                <span class="kw">let</span> <span class="ident">process_id</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="ident">parser</span>.<span class="ident">try_parse</span>(<span class="string">&quot;ProcessID&quot;</span>).<span class="ident">unwrap</span>();
+                <span class="kw">let</span> <span class="ident">image_name</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">parser</span>.<span class="ident">try_parse</span>(<span class="string">&quot;ImageName&quot;</span>).<span class="ident">unwrap</span>();
+                <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;PID: {} ImageName: {}&quot;</span>, <span class="ident">process_id</span>, <span class="ident">image_name</span>);
+            }
+        }
+        <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Error {:?}&quot;</span>, <span class="ident">err</span>),
+    };
+}
+   
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="comment">// First we build a Provider</span>
+    <span class="kw">let</span> <span class="ident">process_provider</span> <span class="op">=</span> <span class="ident">Provider</span>::<span class="ident">new</span>()
+        .<span class="ident">by_guid</span>(<span class="string">&quot;22fb2cd6-0e7b-422b-a0c7-2fad1fd0e716&quot;</span>) <span class="comment">// Microsoft-Windows-Kernel-Process</span>
+        .<span class="ident">add_callback</span>(<span class="ident">process_callback</span>)
+        .<span class="ident">build</span>()
+        .<span class="ident">unwrap</span>();
+   
+    <span class="comment">// We start a trace session for the previously registered provider</span>
+    <span class="comment">// This call will spawn a new thread which listens to the events</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">trace</span> <span class="op">=</span> <span class="ident">UserTrace</span>::<span class="ident">new</span>()
+        .<span class="ident">named</span>(<span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;MyProvider&quot;</span>))
+        .<span class="ident">enable</span>(<span class="ident">process_provider</span>)
+        .<span class="ident">start</span>()
+        .<span class="ident">unwrap</span>();
+
+    <span class="ident">std</span>::<span class="ident">thread</span>::<span class="ident">sleep</span>(<span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">20</span>, <span class="number">0</span>));
+   
+    <span class="comment">// We stop the trace</span>
+    <span class="ident">trace</span>.<span class="ident">stop</span>();
+}</pre></div>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr class='module-item'><td><a class="mod" href="native/index.html" title='ferrisetw::native mod'>native</a></td><td class='docblock-short'><p>Abstraction layer for Native functions and types</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="parser/index.html" title='ferrisetw::parser mod'>parser</a></td><td class='docblock-short'><p>ETW Types Parser</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="property/index.html" title='ferrisetw::property mod'>property</a></td><td class='docblock-short'><p>ETW Event Property information</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="provider/index.html" title='ferrisetw::provider mod'>provider</a></td><td class='docblock-short'><p>ETW Providers abstraction.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="schema/index.html" title='ferrisetw::schema mod'>schema</a></td><td class='docblock-short'><p>ETW Event Schema locator and handler</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="trace/index.html" title='ferrisetw::trace mod'>trace</a></td><td class='docblock-short'><p>ETW Tracing/Session abstraction</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "ferrisetw";</script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

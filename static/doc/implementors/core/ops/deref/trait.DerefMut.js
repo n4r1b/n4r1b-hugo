@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["ferrisetw"] = [{"text":"impl DerefMut for EventTraceProperties","synthetic":false,"types":[]},{"text":"impl DerefMut for EventTraceLogfile","synthetic":false,"types":[]},{"text":"impl DerefMut for EnableTraceParameters","synthetic":false,"types":[]},{"text":"impl DerefMut for TraceEventInfo","synthetic":false,"types":[]},{"text":"impl DerefMut for EventPropertyInfo","synthetic":false,"types":[]},{"text":"impl DerefMut for Pointer","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["ferrisetw"] = [{"text":"impl StructuralPartialEq for PlaError","synthetic":false,"types":[]},{"text":"impl StructuralPartialEq for HResult","synthetic":false,"types":[]},{"text":"impl StructuralPartialEq for TdhInType","synthetic":false,"types":[]},{"text":"impl StructuralPartialEq for TdhOutType","synthetic":false,"types":[]},{"text":"impl StructuralPartialEq for PropertyFlags","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

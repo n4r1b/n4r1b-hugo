@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["SchemaError","Schema module errors"]],"struct":[["Schema","Represents a Schema"],["SchemaLocator","Represents a cache of Schemas already located"]]});
