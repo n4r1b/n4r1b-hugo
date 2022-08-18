@@ -20,7 +20,7 @@ function toggle(e) {
       div.style.maxHeight = "";
       div.style.overflow = "none";
       link.parentElement.style.background = "none";
-      link.parentElement.style.bottom = "10px";
+      link.parentElement.style.bottom = "35px";
     }
     else {
       link.innerHTML = "Show More";

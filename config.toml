@@ -3,11 +3,10 @@ title = "Up is Down and Black is White"
 
 theme = "hello-friend-ng"
 
-DefaultContentLanguage = "en"
+PygmentsCodeFences = true
+PygmentsStyle = "dracula"
 
-pygmentsCodefences = true
-pygmentsUseClasses = true
-PygmentsStyle = "monokai"
+DefaultContentLanguage = "en"
 rssLimit  = 10  # Maximum number of items in the RSS feed.
 
 
@@ -32,6 +31,7 @@ disableSitemap = false
 disable404     = false
 disableHugoGeneratorInject = false
 
+
 googleAnalytics = "UA-157901457-1"
 
 [blackfriday] 
@@ -40,9 +40,11 @@ googleAnalytics = "UA-157901457-1"
 [permalinks]
   posts = "/posts/:year/:month/:title/"
 
-[markup.goldmark.renderer]
-  unsafe= true
-
+[markup.goldmark]
+  [markup.goldmark.renderer]
+    unsafe= true
+  [markup.goldmark.extensions]
+    linkify = false
 
 [author]
   name = "n4r1b"
@@ -70,8 +72,7 @@ googleAnalytics = "UA-157901457-1"
 
   # Directory name of your blog content (default is `content/posts`)
   contentTypeName = "posts"
-  # Default theme "light" or "dark"
-  defaultTheme = "dark"
+  enableThemeToggle = true
 
   [params.logo]
     logoText     = "n4r1b/re$"
