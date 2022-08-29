@@ -36,8 +36,11 @@ HUGO_ENABLEGITINFO = "true"
   status = 301
   force = false
 
-[plugins.inputs]
-buildDir = "public"
-exclude = [
-  './doc/**',
-]
+[[plugins]]
+package = "@netlify/plugin-sitemap"
+
+  [plugins.inputs]
+  buildDir = "public"
+  exclude = [
+    './doc/**',
+  ]
