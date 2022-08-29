@@ -35,3 +35,9 @@ HUGO_ENABLEGITINFO = "true"
   to = "/:splat"
   status = 301
   force = false
+
+[plugins.inputs]
+buildDir = "public"
+exclude = [
+  './doc/**',
+]
