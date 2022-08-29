@@ -44,6 +44,6 @@ package = "@netlify/plugin-sitemap"
   exclude = [
     '**/doc/**',
     '**/doc/**/',
-    './.doc/**,
-    './.doc/**/,
+    './doc/**,
+    './doc/**/,
   ]
