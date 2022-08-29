@@ -30,6 +30,7 @@ disableRSS     = true
 disableSitemap = false
 disable404     = false
 disableHugoGeneratorInject = false
+linenos = true
 
 
 googleAnalytics = "UA-157901457-1"

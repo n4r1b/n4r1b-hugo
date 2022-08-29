@@ -20,7 +20,7 @@ function toggle(e) {
       div.style.maxHeight = "";
       div.style.overflow = "none";
       link.parentElement.style.background = "none";
-      link.parentElement.style.bottom = "35px";
+      link.parentElement.style.bottom = "5px";
     }
     else {
       link.innerHTML = "Show More";
@@ -28,7 +28,7 @@ function toggle(e) {
       div.style.overflow = "hidden";
       link.parentElement.style.bottom = "";
       link.parentElement.style.background = "linear-gradient(rgba(237,245,251,0),#2d2d2ded 30%)";
-      div.scrollIntoView({ behavior: 'smooth' });
+      div.scrollIntoView({ behavior: 'smooth',  block: "nearest" });
     }
   }
 }
@@ -41,6 +41,16 @@ function makeCollapsible() {
     if (div.offsetHeight > height) {
       div.style.maxHeight = height.toString()+"px";
       div.style.overflow = "hidden";
+
+      if (div.childElementCount > 0 ) {
+        var child = div.children[0];
+        child.style.margin = "0px auto";
+
+        if ( child.childElementCount > 0) {
+          child.children[0].style.marginTop = "0px";
+          child.children[0].style.marginBottom = "0px";
+        }
+      }
 
       var e = document.createElement('div');
       e.className = "highlight-link";
