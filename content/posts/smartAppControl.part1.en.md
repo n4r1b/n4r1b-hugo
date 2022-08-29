@@ -1,7 +1,7 @@
 +++
 categories = ["Nights Watch", "SAC", "Smart App Control", "Windows Defender", "Microsoft Security", "CI", "AppLocker", "SmartLocker"]
 tags = ["Nights Watch", "SAC", "Smart App Control", "Windows Defender", "Microsoft Security", "CI", "AppLocker", "SmartLocker"]
-date = "2022-08-22"
+date = "2022-08-29"
 description = "Deep dive into the internals of the latest Windows Security feature: \"Smart App Control\""
 images = ["https://n4r1b.com/images/smartAppControl/SmartAppControl.jpg"]
 featured = ["https://n4r1b.com/images/smartAppControl/SmartAppControl.jpg"]
@@ -385,7 +385,7 @@ Personally I think this is a simple solution to protect the key. This was alread
 And with this we've reached the end of this post. This is pretty much everything we need to know on how SAC gets initialized. In the next post we can already start looking into how SAC works. I hope you guys enjoyed it and learned something from the post. As always, if there's any mistake or something not clear, please don't hesitate to reach out to me on twitter [@n4r1b](https://twitter.com/n4r1B). See you in the next post!!
 
 # Appendix
-Just sharing this for completion. All credit here goes to Matt Graeber and the amazing [WDACTools](https://github.com/mattifestation/WDACTools).
+Just sharing this for completion. All credit here goes to Matt Graeber and the amazing [WDACTools](https://github.com/mattifestation/WDACTools)
 
 - [SAC Evaluation Policy](https://gist.github.com/n4r1b/f1c44d573f055ee2194a16ae10a61611)
 - [SAC Enforce policy](https://gist.github.com/n4r1b/a2c026def8fb77e01ab231c43430bc90)
