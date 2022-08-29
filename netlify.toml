@@ -43,5 +43,5 @@ package = "@netlify/plugin-sitemap"
   buildDir = "public"
   exclude = [
     '**/doc/',
-    './doc/**,
+    './doc/**
   ]
