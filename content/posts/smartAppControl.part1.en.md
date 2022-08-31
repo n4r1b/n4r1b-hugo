@@ -68,7 +68,7 @@ Before ending this section let's see what happens in case of an OS upgrade. In o
 </addObjects>
 ```
 
-When upgrading the OS this piece of code will check if the Registry key `HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy\VerifiedAndReputablePolicyState` exist, and it will be created with the SAC state 0 (Off state) otherwise.
+When upgrading the OS this piece of code will check if the Registry value `HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy\VerifiedAndReputablePolicyState` exist, if it doesn't it will be created with the SAC state 0 (Off state).
 
 Aside from these two new registry values, the OS will ship with two new System Integrity policy files (`.cip`) within the `System32\CodeIntegrity\CiPolicies` folder.
 
@@ -90,7 +90,7 @@ Using the [CIPolicyParser](https://github.com/mattifestation/WDACTools/blob/mast
 - Enabled:Conditional Windows Lockdown Policy
 - Enabled:Audit Mode (Only in the SAC Evaluation Policy)
 
-Lastly, we can search inside the `System32` folder to find binaries/modules that make use of the previously mentioned registry keys.
+Lastly, we can search inside the `System32` folder to find binaries/modules that make use of the previously mentioned registry values.
 
 ![alt img](/images/smartAppControl/part1/RegKeyVerifiedAndReputable.png "Search VerifiedAndReputablePolicyState key")
 
